@@ -5,7 +5,8 @@ import cv2
 from bs4 import BeautifulSoup
 import pytesseract
 import yt_dlp
-
+import re
+import glob
 
 COOKIES = {
     '__Secure-3PAPISID': 'y1HzxjtLD_W65kMH/ANFX75o5kE1aHjUuM',
@@ -98,6 +99,14 @@ def download_media(media_list, folder_name, is_video=False):
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                     ydl.download([media_url])
                 print(f"Downloaded streaming video: {media_url}")
+
+                # Sanitize filenames after download
+                for file_name in os.listdir(folder_name):
+                    sanitized_name = re.sub(r'\s+', '_', file_name)
+                    if file_name != sanitized_name:
+                        os.rename(os.path.join(folder_name, file_name), os.path.join(folder_name, sanitized_name))
+                        print(f"Renamed file: {file_name} -> {sanitized_name}")
+
             else:
                 file_name = f"{folder_name}/{idx}_{os.path.basename(media_url)}"
                 extension = os.path.splitext(media_url)[-1].lower()
@@ -140,26 +149,78 @@ def detect_watermarks(image_folder, watermark_folder):
             print(f"Error processing {img_path}: {e}")
 
 
+def detect_watermarks_in_video(video_folder, output_folder, watermark_keywords):
+    pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+    os.makedirs(output_folder, exist_ok=True)
+
+    video_files = glob.glob(os.path.join(video_folder, "*.*"))
+    if not video_files:
+        print(f"No video files found in folder: {video_folder}")
+        return
+
+    for video_path in video_files:
+        sanitized_path = video_path.replace("\\", "/")
+        if not os.path.exists(sanitized_path):
+            print(f"File not found: {sanitized_path}")
+            continue
+        
+        cap = cv2.VideoCapture(sanitized_path)
+        print(f"Attempting to open video: {sanitized_path}")
+
+        if not cap.isOpened():
+            print(f"Failed to open video: {sanitized_path}")
+            continue
+
+        frame_count = 0
+        watermarked_frames = 0
+
+        while True:
+            ret, frame = cap.read()
+            if not ret:
+                break  # End of video
+
+            frame_count += 1
+            gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+            try:
+                text = pytesseract.image_to_string(gray_frame)
+                if any(keyword in text.lower() for keyword in watermark_keywords):
+                    watermarked_frames += 1
+                    frame_time = cap.get(cv2.CAP_PROP_POS_MSEC) / 1000.0
+                    frame_output_path = os.path.join(output_folder, f"frame_{frame_count}.jpg")
+                    cv2.imwrite(frame_output_path, frame)
+                    print(f"Watermark detected in frame {frame_count} at {frame_time:.2f}s, saved to {frame_output_path}")
+                    break
+
+            except Exception as e:
+                print(f"Error processing frame {frame_count}: {e}")
+
+        cap.release()
+        print(f"Processed {frame_count} frames. Detected watermarks in {watermarked_frames} frames.")
 
 def main():
     base_url = "https://www.shiksha.com/engineering/colleges/b-tech-colleges-india"
     cards = get_cards(base_url)
 
     for card in cards:
+        sanitized_name = re.sub(r'[<>:"/\\|?*]', '_', card['name'])
+        cleaned_name = sanitized_name.replace(" ", "_").replace("|", "_")
         print(f"Processing: {card['name']} - {card['url']}")
         images, videos = scrape_media(card['url'])
 
         
         if images:
             print("going inside image")
-            download_media(images, f"images/{card['name']}", is_video=False)
+            download_media(images, f"images/{cleaned_name}", is_video=False)
             print("going outside image")
         if videos:
             print("going inside video")
-            download_media(videos, f"videos/{card['name']}", is_video=True)
+            download_media(videos, f"videos/{cleaned_name}", is_video=True)
             print("going outside video")
 
-        detect_watermarks(f"images/{card['name']}", f"watermarked_images/{card['name']}")
+        detect_watermarks(f"images/{cleaned_name}", f"watermarked_images/{cleaned_name}")
+        watermark_keywords = ["watermark", "sample", "copyright", "shiksha"]
+        detect_watermarks_in_video(f"videos/{cleaned_name}",f"watermarked_videos/{cleaned_name}", watermark_keywords)
 
 if __name__ == "__main__":
     main()
