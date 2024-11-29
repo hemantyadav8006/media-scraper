@@ -8,30 +8,9 @@ import yt_dlp
 import re
 import glob
 
-COOKIES = {
-    '__Secure-3PAPISID': 'y1HzxjtLD_W65kMH/ANFX75o5kE1aHjUuM',
-    '__Secure-3PSID': 'g.a000qghJj8QkPU81CKv9-WjKc8apMzaBn1AL7x2udc596IFvVv_9vRkdfZBklj_qrgWfgyE_UwACgYKATcSAQASFQHGX2MiuCkmaKZw-cb67SfZ00FIXRoVAUF8yKoQ6ieVmTKztrD705VlRzzG0076',
-    'NID': '519=Y9c1pShWNwr2MWS58hrStYWHSN8qhE_2l_p9cvSJxXNmDO2-nrPhEZqa--k2UMwA8q9gqJRKIPewvSnNjCCkwd_SC8c3na8qWidHLaGrAk3TjG1qo2i94ophbTptFqRnYYCkeQB1J9jbr1kvqO80g-SncR3wpMIylCxF8sgG4NgPvIl-WOKyg_O1uUvwbJ2H3RMHzMvOCv2edbpJdb6nQiwE3KviarsMF_yVS8dQ2kmjA2G_cUjjN1mICOA4KtYW7rq608k5CepD3NjbQGMDfEMMVUfDAvchkHlnzmff0J_rFk0qiObF1AaG8W5w39sai8F-bbfo7E85Zs7f8JkcGisz8ERO2cX1LgnNBSURSn203gEH5Vc-IssNQi3R0-ijm2-vaUkDTifqJhRvtrOjujHRKH9DvXIRY-RZwSgIyUfi9xa7WxdxpLV1h8PLfLkYnWeuTSKjUG4aWe43he9Kqc90fxb7g-GY9DOkszH55a-szy_p4N33THSBaQqoN7503Qcw3Hv5fRDKTKO5OvOfWCRdfdEvkqiUdrgUvQ5pYE9ytPjjlCuiYWloHRV3W79ZuUhbtmlp5M6lvnIqWsjzSQDZiHx-BCkUQeFTCiP0QFH3xeJ1VZ2QNu0u7u-B1XRsRHaE-keGPLCvXfbWfrPbA5UM6nj0gNlorcR7iR6ykj5Gw3qyeSSKr0qJnoZL7HQngsmTsHMQva2KiiO386jJIYZVGbuNwD84eEkuaDzJLnZECYB9mkVCF3jpN9CUxUkCZvVnXzx2e50PjkJ4EL5emwmdMjISAzqAjeSB9noXwu3IaghODCUvnd_r4g19d7hQ0uUZwaRIsWeKXT-k9_VqEK6DZNddJoO_upPicva6tqo84Z6zT5fIB5fHrIxdK9F9xKiS_o2JFimnaX2sehVqxQZ8t382JDoqUJ2CNAIEbjeHbbtmIBGxx3VlbjkiruwgoyHmrLS_bao7BetLwUh5PRvnfz3DqUYW4btvXQfZsgZAYrOJ7AMKcEIZiiczWtDtnG-1ezIhi7uMfU46Bs5gu_lZPb5CBVEFVoxuL4C3QJtS5mbzwR47R4ghATyGQmz1fT6oFVPcWxeurjFT3Llyk6xMIXmWpmRt6a-ImDFrclEC9716794kC88',
-    '__Secure-3PSIDTS': 'sidts-CjEBQT4rX6ey14m8s5ZSTpszxCsG3Cc7KPnCdtvkWXb6bCmxzb98DLv7DZDaC6zTUpmXEAA',
-    '__Secure-3PSIDCC': 'AKEyXzXChxQYKX5KABSneE-qCXJxzI7Uo_S_UxT1Bygof0UHoSkIhXeTLsgICf5K_EMEjQ23px4',
-}
+COOKIES = {...}
 
-HEADERS = {
-    'accept': '*/*',
-    'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
-    'content-type': 'text/plain;charset=UTF-8',
-    'origin': 'https://www.shiksha.com',
-    'priority': 'u=1, i',
-    'referer': 'https://www.shiksha.com/engineering/colleges/b-tech-colleges-india',
-    'sec-ch-ua': '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"Windows"',
-    'sec-fetch-dest': 'empty',
-    'sec-fetch-mode': 'no-cors',
-    'sec-fetch-site': 'cross-site',
-    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-    'x-client-data': 'CIq2yQEIpLbJAQipncoBCNLtygEIlaHLAQj7mM0BCIWgzQEI9M/OAQid0s4BCP7TzgE=',
-}
+HEADERS = {...}
 
 def get_cards(base_url):
     response = requests.get(base_url, headers=HEADERS, cookies=COOKIES)
