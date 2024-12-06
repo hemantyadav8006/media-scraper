@@ -21,8 +21,9 @@ This repository contains a Python-based tool to scrape images and videos from co
 
 ## Installation
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/media-scraper.git
-   cd media-scraper
-   ```
+### 1. Clone the repository:
+
+```bash
+git clone https://github.com/yourusername/media-scraper.git
+cd media-scraper
+```
